@@ -4,9 +4,7 @@ import map
 def distance(x, y, x1, y1):
         return ((x-x1)**2 + (y-y1)**2)**0.5
 
-class Enemy(object):
-
-
+class Enemy(object):    
     def __init__(self, x, y):
         self.width = 30
         self.height = 65
@@ -27,7 +25,6 @@ class Enemy(object):
     
     def move(self):
         for i in range(len(self.path)):
-            if 
             x1,y1 = self.path[i][0],self.path[i][1]
             x2,y2 = self.path[i+1][0], self.path[i+1][1]
             self.totaldist += distance(x1,y1,x2,y2)

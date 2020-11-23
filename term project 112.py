@@ -6,12 +6,7 @@ import map
 
 
 
-
-
-class MyApp(App):
-
-    @staticmethod
-    def getCellBounds(row, col):
+def getCellBounds(row, col):
         cellWidth = 1200 / 15
         cellHeight = 700 / 15
         x0 = col * cellWidth
@@ -19,6 +14,10 @@ class MyApp(App):
         y0 =  row * cellHeight
         y1 = (row+1) * cellHeight
         return (x0, y0, x1, y1)
+
+class MyApp(App):
+
+
 
     path = [(-8, 224),(19, 224), (177, 235), (282, 283), (526, 277), (607, 217), (641, 105), (717, 57), (796, 83), (855, 222), (973, 284), (1046, 366), (1022, 458), (894, 492), (740, 504), (580, 542), (148, 541), (10, 442), (-20, 335), (-75, 305), (-100, 345)]
 
@@ -34,9 +33,10 @@ class MyApp(App):
         map = "images/map.png"
         self.image1 = self.loadImage(map)
         self.image2 = self.scaleImage(self.image1, 0.65)
+        self.board =[[0] * self.cols for row in range(self.rows)]
 
     
-    def mousePressed(mode, event):
+    def mousePressed(self, event):
             x = event.x
             y = event.y
             print(x,y)
@@ -74,10 +74,11 @@ class MyApp(App):
         
         for row in range(self.rows):
             for col in range(self.cols):
-                board = map.board(self.rows, self.cols)
+                board = map.startend(self.board)
                 x0,y0,x1,y1 = getCellBounds(row, col)
+
                 if board[row][col] == 0:
-                    canvas.create_rectangle(x0,y0,x1,y1, fill = "blue")
+                    canvas.create_rectangle(x0,y0,x1,y1, fill ="blue")
                 else:
                     canvas.create_rectangle(x0,y0,x1,y1, fill="yellow")
 

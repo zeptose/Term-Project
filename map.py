@@ -7,38 +7,58 @@ def board(rows, cols):
     return [[0] * cols for row in range(rows)]
 
 def startend(board):
-    startx = random.randrange(len(board))
+    startrow = random.randrange(len(board))
+    startcol = 0
+    endrow = random.randrange(len(board))
+    endcol = len(board) -1
     rows = len(board)
     cols = len(board)
-    for row in range(len(board)):
-        for col in range(len(board[0])):
-            result = legalmove(board, rows,cols,row,col)
-            if result == True:
-                return result
+    board[startrow][startcol] = 1
+    result = legalmove(board, rows,cols,startrow, startcol, endrow, endcol)
+    if result == True:
+        return board
     return None
 #increment row by 1 and random do columnn up or down by 1
 
-def legalmove(board, rows, cols,startrow,startcol):
-    dirs = [(-1, 0), (0, -1), (0, +1), (+1, 0)]
+def legalmove(board, rows, cols,startrow,startcol, endrow, endcol):
+    dirs = [(0, 0), (1, 0)]
     random.shuffle(dirs)
 
-    
-    if startcol == cols-1:
+    if startcol == endcol:
         return True 
+
     for move in dirs:
+        newcol = startcol + 1
+        board[startrow][newcol] = 1
+        if newcol == endcol:
+            return True 
         newrow = startrow + move[0]
-        newcol = startcol + move[1]
-        print(newrow,newcol)
         if newrow >= 0 and newrow < rows and newcol >= 0 and newcol < cols and board[newrow][newcol] == 0:
-            board[newrow][newcol] = 1
-            if legalmove(board,rows,cols,newrow,newcol):
+            if newrow == startrow:
+                newcol += 1
+                board[newrow][newcol] = 1
+                if legalmove(board,rows,cols,newrow,newcol,endrow, endcol):
+                    return True 
+                else:
+                    board[newrow][newcol] = 0
+            else:
+                board[newrow][newcol] = 1
+                if legalmove(board,rows,cols,newrow,newcol,endrow, endcol):
+                    return True 
+                else:
+                    board[newrow][newcol] = 0
+        if newrow == len(board) - 1:
+            newrow = 0
+            for row in range(len(board)-1, 0, -1):
+                board[row][newcol] == 1
+            if legalmove(board,rows,cols,newrow,newcol,endrow, endcol):
                 return True 
             else:
                 board[newrow][newcol] = 0
             
+        
+
     return False 
 
-board = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]]
-print(startend(board))
-print(board)
+print(startend(board(15,15)))
 
