@@ -2,7 +2,8 @@ from cmu_112_graphics import *
 import enemies
 import PIL
 import math 
-import map
+import n
+import tkinter
 
 
 
@@ -14,12 +15,9 @@ def getCellBounds(row, col):
         y0 =  row * cellHeight
         y1 = (row+1) * cellHeight
         return (x0, y0, x1, y1)
-
+def board(rows, cols):
+    return [[0] * cols for row in range(rows)]
 class MyApp(App):
-
-
-
-    path = [(-8, 224),(19, 224), (177, 235), (282, 283), (526, 277), (607, 217), (641, 105), (717, 57), (796, 83), (855, 222), (973, 284), (1046, 366), (1022, 458), (894, 492), (740, 504), (580, 542), (148, 541), (10, 442), (-20, 335), (-75, 305), (-100, 345)]
 
     def appStarted(self):
         self.rows = 15
@@ -30,12 +28,16 @@ class MyApp(App):
         self.lives = 100
         self.gameOver = False
         self.paused = False     
-        map = "images/map.png"
-        self.image1 = self.loadImage(map)
-        self.image2 = self.scaleImage(self.image1, 0.65)
-        self.board =[[0] * self.cols for row in range(self.rows)]
-
-    
+        self.board = board(self.rows, self.cols)
+        self.image = self.loadImage("Images/land.png")
+        width, height = self.image.size
+        scaleFactor = 80/width
+        self.image = self.scaleImage(self.image, scaleFactor)
+        self.image2 = self.loadImage("Images/land1.png")
+        width1, height1 = self.image2.size
+        scaleFactor1 = 80/width1
+        self.image2 = self.scaleImage(self.image2, scaleFactor1)
+        self.boardd = n.startend(self.board)
     def mousePressed(self, event):
             x = event.x
             y = event.y
@@ -66,21 +68,21 @@ class MyApp(App):
         #for balloon in enemies:
             #canvas.create_oval(cx-r, cy+r, cx+r, cy-r, fill=color)
 
-
+    def drawenemy(self, canvas):
+        canvas.create_oval()
 
     def redrawAll(self, canvas):
-        #canvas.create_image(self.width/2, self.height/2, image=ImageTk.PhotoImage(self.image2))
-       # drawenemies(self, canvas)
-        
         for row in range(self.rows):
             for col in range(self.cols):
-                board = map.startend(self.board)
                 x0,y0,x1,y1 = getCellBounds(row, col)
-
-                if board[row][col] == 0:
-                    canvas.create_rectangle(x0,y0,x1,y1, fill ="blue")
-                else:
-                    canvas.create_rectangle(x0,y0,x1,y1, fill="yellow")
+                cx,cy = (x0+x1)/2, (y0+y1)/2
+                if self.boardd[row][col] == 0:
+                    canvas.create_rectangle(x0,y0,x1,y1)
+                    canvas.create_image(cx,cy, image=ImageTk.PhotoImage(self.image))
+                elif self.boardd[row][col] == 1:
+                    canvas.create_rectangle(x0,y0,x1,y1)
+                    canvas.create_image(cx,cy,image=ImageTk.PhotoImage(self.image2))
+        drawenemy(self, canvas)       
 
 
         

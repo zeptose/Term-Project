@@ -1,5 +1,6 @@
 import math
 import map
+from cmu_112_graphics import *
 
 def distance(x, y, x1, y1):
         return ((x-x1)**2 + (y-y1)**2)**0.5
@@ -10,9 +11,12 @@ class Enemy(object):
         self.height = 65
         self.health = 1
         self.vel = 3
-        self.path = map.startend
-        self.x = self.path[0][0]
-        self.y = self.path[0][1]
+        self.rows = 15
+        self.cols = 15
+        self.board = map.board(self.rows, self.cols)
+        self.path = map.startend(self.board)
+        self.x = 1
+        self.y = 1
         self.pathpos = 0
         self.movecount = 0
         self.totaldist = 0
@@ -24,13 +28,12 @@ class Enemy(object):
         return False
     
     def move(self):
-        for i in range(len(self.path)):
-            x1,y1 = self.path[i][0],self.path[i][1]
-            x2,y2 = self.path[i+1][0], self.path[i+1][1]
-            self.totaldist += distance(x1,y1,x2,y2)
+        for row in range(len(self.path)):
+            for col in range(len(self.path)):
+                if self.path[row][col] == 1:
+                    pass
 
-            if self.totaldist >= 1065:
-                self.dir = -1
+                    
 
 
     
