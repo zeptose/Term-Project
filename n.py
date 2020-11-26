@@ -5,7 +5,7 @@ from cmu_112_graphics import *
 
 
 
-def startend(board):
+def createmap(board):
     startrow = random.randrange(len(board))
     startcol = 0
     endrow = random.randrange(len(board))
