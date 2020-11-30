@@ -13,13 +13,11 @@ class Enemy(object):
         self.rows = 15
         self.cols = 15
         self.board = board(self.rows, self.cols)
-        self.path = []
-        self.path1 = n.createmap(self.board, self.path)[0]
-        self.endrow = self.path[-1][0]
-        self.endcol = 14
+        self.peth = []
+        self.path1 = n.createmap(self.board, self.peth)[0]    
         self.gold = 15
         self.pathpos = 0
-        self.row, self.col = self.path[self.pathpos]
+        self.row, self.col = self.peth[0]
 
    
     def weakerballoon(self):
@@ -27,15 +25,6 @@ class Enemy(object):
         return self
     
 
-    def move(self):
-
-        self.row, self.col = self.path[self.pathpos][0], self.path[self.pathpos][1]
-        self.pathpos += 1
-        
-        if self.pathpos >= len(self.path):
-            self.col = self.col + 1
-
-  
                         
 class BlueBalloon(Enemy):
     def __init__(self):
