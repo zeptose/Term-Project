@@ -7,7 +7,7 @@ class Tower:
         self.name = "tower"
         self.price = 100
         self.position = position
-        self.range = 500
+        self.range = 200
         self.selected = False
         self.damage = 1
         self.x = 1

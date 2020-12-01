@@ -23,7 +23,12 @@ class Enemy(object):
     def weakerballoon(self):
         self.health = 0
         return self
-    
+    def getpos(self):
+        return self.row, self.col
+    #def move(self):
+        #self.row = self.peth[self.pathpos][0]
+        #self.col = self.peth[self.pathpos][1]
+        #self.pathpos += 1
 
                         
 class BlueBalloon(Enemy):
@@ -32,8 +37,11 @@ class BlueBalloon(Enemy):
         self.color = "blue"
         self.gold = 30
         self.health = 2
+    
     def weakerballoon(self):
         balloon = Enemy()
+        balloon.row = self.row
+        balloon.col = self.col
         return balloon
 
 class GreenBalloon(Enemy):
@@ -42,8 +50,11 @@ class GreenBalloon(Enemy):
         self.color = "green"
         self.gold = 60
         self.health = 3
+    
     def weakerballoon(self):
         balloon = BlueBalloon()
+        balloon.row = self.row
+        balloon.col = self.col
         return balloon
 
 class YellowBalloon(Enemy):
@@ -52,8 +63,11 @@ class YellowBalloon(Enemy):
         self.color = "yellow"
         self.gold = 100
         self.health = 4
+    
     def weakerballoon(self):
         balloon = GreenBalloon()
+        balloon.row = self.row
+        balloon.col = self.col
         return balloon
 
 
