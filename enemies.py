@@ -7,8 +7,8 @@ def distance(x, y, x1, y1):
 def board(rows, cols):
     return [[0] * cols for row in range(rows)]
 class Enemy(object):    
-    def __init__(self, health=1, color="red"):
-        self.color = color
+    def __init__(self, row, col):
+        self.color = "red"
         self.health = 1 
         self.rows = 15
         self.cols = 15
@@ -16,58 +16,65 @@ class Enemy(object):
         self.peth = []
         self.path1 = n.createmap(self.board, self.peth)[0]    
         self.gold = 15
-        self.pathpos = 0
-        self.row, self.col = self.peth[0]
-
+        self.pos = 0
+        self.row, self.col = row, col
    
     def weakerballoon(self):
         self.health = 0
         return self
-    def getpos(self):
-        return self.row, self.col
-    #def move(self):
-        #self.row = self.peth[self.pathpos][0]
-        #self.col = self.peth[self.pathpos][1]
-        #self.pathpos += 1
+
+
 
                         
 class BlueBalloon(Enemy):
-    def __init__(self):
-        super().__init__(self)
+    def __init__(self, row, col):
+        super().__init__(row,col)
         self.color = "blue"
         self.gold = 30
         self.health = 2
+        self.row = row 
+        self.col = col
+        self.pos = 0
     
     def weakerballoon(self):
-        balloon = Enemy()
-        balloon.row = self.row
-        balloon.col = self.col
+        balloon = Enemy(self.row, self.col)
+      #  balloon.row = self.row
+      #  balloon.col = self.col
+        balloon.pos = self.pos
         return balloon
 
 class GreenBalloon(Enemy):
-    def __init__(self):
-        super().__init__(self)
+    def __init__(self, row, col):
+        super().__init__(row, col)
         self.color = "green"
         self.gold = 60
         self.health = 3
-    
+        self.row = row 
+        self.col = col
+        self.pos = 0
+   
     def weakerballoon(self):
-        balloon = BlueBalloon()
-        balloon.row = self.row
-        balloon.col = self.col
+        balloon = BlueBalloon(self.row, self.col)
+        #balloon.row = self.row
+       # balloon.col = self.col
+        balloon.pos = self.pos
         return balloon
 
 class YellowBalloon(Enemy):
-    def __init__(self):
-        super().__init__(self)
+    def __init__(self, row, col):
+        super().__init__(row, col)
         self.color = "yellow"
         self.gold = 100
         self.health = 4
+        self.row = row 
+        self.col = col
+        self.pos = 0
     
     def weakerballoon(self):
-        balloon = GreenBalloon()
-        balloon.row = self.row
-        balloon.col = self.col
+        balloon = GreenBalloon(self.row, self.col)
+        #balloon.row = self.row
+       # balloon.col = self.col
+        balloon.pos = self.pos
         return balloon
 
 
