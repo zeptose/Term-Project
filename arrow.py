@@ -6,6 +6,7 @@ import enemies
 import n 
 import towers
 import random 
+from other import *
 
 def distance(x, y, x1, y1):
         return ((x-x1)**2 + (y-y1)**2)**0.5
@@ -28,15 +29,14 @@ class arrow(object):
         self.radius = 10
         self.range = 200
     
-    def checkcollision(self, enemies):
-        for balloon in enemies:
+    def checkcollision(self, enemy):
+        for balloon in enemy:
             if self.hit(balloon):
-                newbloon = enemies.weakerballoon()
-                enemies.remove(balloon) 
+                newbloon = balloon.weakerballoon()
+                enemy.remove(balloon) 
                 if newbloon.health > 0:
-                    enemies.append(newbloon)
-            print("hi")
-            return True 
+                    enemy.append(newbloon)
+                return True 
         return False 
  
     def hit(self, balloon):
@@ -45,31 +45,19 @@ class arrow(object):
         br, bc = balloon.row, balloon.col
         bx, by, bx1, by1 = getCellBounds(br, bc)
         bcx, bcy = (bx+bx1)/2, (by+by1)/2
-     #  self.dx, self.dy = x-x0, y-y0
+        
         #collision occurs
         if distance(x0, y0, bcx, bcy) <= self.radius + 15:
             return True 
-       # elif distance(x, y0, bcx, bcy) <= self.radius + 15:
-        #    return True 
-        if self.dy == 0:
-            if abs(y-bcy) < self.radius + 15:
-                if (y0<=bcy<=y) or (y<=bcy<=y0):
-                    return True 
-            return False 
-        elif self.dx == 0:
-            if abs(x-bcx) < self.radius + 15:
-                if (x0<=bcx<=x) or (x<=bcx<=x0):
-                    return True 
-            return False 
-
+        #else change x0, y0 until there is collision    
         else:
-            self.dx, self.dy = x-x0, y-y0
-            for x in range(20):
+            dx, dy = x-x0, y-y0
+            for i in range(10):
                 a = distance(bcx, bcy, x, y)
                 if a <= self.radius + 15:
                     return True
-                x0 += self.dx / 20
-                y0 += self.dy / 20
+                x0 += dx / 10
+                y0 += dy / 10
             return False
 
 
