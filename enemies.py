@@ -18,7 +18,7 @@ class Enemy(object):
         self.gold = 15
         self.pos = 0
         self.row, self.col = row, col
-   
+        self.freeze = False 
     def weakerballoon(self):
         self.health = 0
         return self
@@ -35,11 +35,10 @@ class BlueBalloon(Enemy):
         self.row = row 
         self.col = col
         self.pos = 0
+        self.freeze = False 
     
     def weakerballoon(self):
         balloon = Enemy(self.row, self.col)
-      #  balloon.row = self.row
-      #  balloon.col = self.col
         balloon.pos = self.pos
         return balloon
 
@@ -52,11 +51,10 @@ class GreenBalloon(Enemy):
         self.row = row 
         self.col = col
         self.pos = 0
+        self.freeze = False 
    
     def weakerballoon(self):
         balloon = BlueBalloon(self.row, self.col)
-        #balloon.row = self.row
-       # balloon.col = self.col
         balloon.pos = self.pos
         return balloon
 
@@ -69,15 +67,27 @@ class YellowBalloon(Enemy):
         self.row = row 
         self.col = col
         self.pos = 0
+        self.freeze = False 
     
     def weakerballoon(self):
         balloon = GreenBalloon(self.row, self.col)
-        #balloon.row = self.row
-       # balloon.col = self.col
         balloon.pos = self.pos
         return balloon
 
-
+class MetalBalloon(Enemy):
+    def __init__(self, row, col):
+        super().__init__(row, col)
+        self.color = "black"
+        self.gold = 100
+        self.health = 20
+        self.row = row 
+        self.col = col
+        self.pos = 0
+        self.freeze = False 
+    
+    def weakerballoon(self):
+        self.health -=1
+        return self
 
 
 

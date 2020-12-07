@@ -4,6 +4,12 @@ import enemies
 import arrow
 from other import *
 
+
+### file for things tower related
+### Attack method returns a single bullet
+##Tower attack inspired from Tech With Tim: https://github.com/techwithtim/Tower-Defense-Game
+
+
 def normalize(x, y):
     return (x**2 + y**2)**.5
 def getCellBounds(row, col):
@@ -26,8 +32,7 @@ class Tower:
         self.x = 1
         self.y = 2
         self.radius = 50
-        self.shoot = 30
-        self.ammo = 15
+        self.shoot = 5
 
     def attack(self, enemies):
         f = None
@@ -42,6 +47,7 @@ class Tower:
                     f = balloon
                 elif balloon.pos < f.pos:
                     f = balloon
+        #sometimes f is still none 
         if f != None:
             row, col = f.row, f.col
             bx, by, bx1, by1 = getCellBounds(row, col)
@@ -60,15 +66,15 @@ class Fasttower(Tower):
         self.name = "Fasttower"
         self.price = 150
         self.range = 175
-        self.shoot = 50
+        self.shoot = 20
 
 class bishoptower(Tower):
     def __init__(self, position):
         super().__init__(position)
         self.name = "tacshooter"
         self.price = 300
-        self.range = 250
-        self.shoot = 100
+        self.range = 200
+        self.shoot = 20
    
     def attack(self, enemies):
         bul = []
@@ -84,8 +90,8 @@ class Wizardtower(Tower):
         self.name = "Wizardtower"
         self.price = 500
         self.range = 300
-        self.lx = None
-        self.ly = None 
+        self.lx = 1
+        self.ly = 1
         self.shoot = 20
     def attack(self, enemies):
         i = 0
@@ -106,5 +112,13 @@ class Wizardtower(Tower):
                 
         if self.lx == None and self.ly == None:
             return (0,0,0)
+class Freezetower(Tower):
+    def __init__(self, position):
+        super().__init__(position)
+        self.name = "Freezetower"
+        self.price = 400
+        self.range = 200 
+
+
         
         

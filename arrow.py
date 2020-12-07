@@ -1,4 +1,4 @@
-#import Weapons
+#File for all things shooting related 
 import PIL
 import math
 import os
@@ -7,6 +7,8 @@ import n
 import towers
 import random 
 from other import *
+
+### Collision check inspired from my Hack112 Projectile collision https://github.com/mattngaw/122.io/blob/main/Weapons.py
 
 def distance(x, y, x1, y1):
         return ((x-x1)**2 + (y-y1)**2)**0.5
@@ -32,12 +34,23 @@ class arrow(object):
     def checkcollision(self, enemy):
         for balloon in enemy:
             if self.hit(balloon):
-                newbloon = balloon.weakerballoon()
-                enemy.remove(balloon) 
-                if newbloon.health > 0:
-                    enemy.append(newbloon)
-                return True 
+                if not isinstance(balloon, enemies.MetalBalloon):
+                    newbloon = balloon.weakerballoon()
+                    enemy.remove(balloon) 
+                    if newbloon.health > 0:
+                        enemy.append(newbloon)
+                    return True 
+                else:
+                    if balloon.freeze == True: 
+                        if self.hit(balloon):
+                            newbloon = balloon.weakerballoon()
+                            enemy.remove(balloon) 
+                            if newbloon.health > 0:
+                                enemy.append(newbloon)
+                            return True
         return False 
+                
+            
  
     def hit(self, balloon):
         x,y = self.position[0], self.position[1]
@@ -47,17 +60,17 @@ class arrow(object):
         bcx, bcy = (bx+bx1)/2, (by+by1)/2
         
         #collision occurs
-        if distance(x0, y0, bcx, bcy) <= self.radius + 15:
+        if distance(x0, y0, bcx, bcy) <= self.radius + 15 or self.dx == 0 or self.dy == 0:
             return True 
+
         #else change x0, y0 until there is collision    
         else:
             dx, dy = x-x0, y-y0
-            for i in range(10):
-                a = distance(bcx, bcy, x, y)
-                if a <= self.radius + 15:
-                    return True
-                x0 += dx / 10
-                y0 += dy / 10
+            a = distance(bcx, bcy, x, y)
+            if a <= self.radius + 15:
+                return True
+            x0 += dx / 10
+            y0 += dy / 10
             return False
 
 

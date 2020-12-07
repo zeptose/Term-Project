@@ -1,3 +1,6 @@
+## File with other useful functions 
+##get cell, get cellbounds from cmu 15112 graphics : https://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
+
 def getCell(x, y):
         cellWidth  = 1200/15
         cellHeight = 700/15

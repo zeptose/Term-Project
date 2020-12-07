@@ -8,11 +8,14 @@ import towers
 import random
 import arrow
 from other import *
-
+#add spikes and try to make movement in x,y to add speed on balloons
 ####All tower images are from CraftPix.net
-##Background from wallpapertip.com 
-
-
+### map from: https://craftpix.net/product/tower-defense-2d-game-kit/
+###main towers from: https://craftpix.net/product/archer-tower-game-assets/
+### magic tower from: https://craftpix.net/product/magic-tower-game-assets/
+##Background from wallpapertip.com, https://www.wallpapertip.com/wpic/miTixR_abstract-art-cool-backgrounds/ 
+##Animations, graphics from cmu 15112 graphics :https://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
+##modal app from https://www.cs.cmu.edu/~112/notes/notes-animations-part3.html
 
 def runGame():
     def board(rows, cols):
@@ -109,11 +112,16 @@ def runGame():
             mode.image7 = mode.loadImage("Images/22.png")
             width, height = mode.image7.size
             mode.image7 = mode.scaleImage(mode.image7, 20/width)
+
+            mode.image8 = mode.loadImage("Images/freeze1.png")
+            width, height = mode.image8.size
+            mode.image8 = mode.scaleImage(mode.image8, 80/width)
             
             mode.lix = None
             mode.liy = None 
             mode.lightning = []
             mode.bolts = []
+         #   mode.timerDelay = 200
             
 
         def addTower(mode, x, y):
@@ -122,8 +130,8 @@ def runGame():
         
         
         def spawnv2(mode):
-            while len(mode.enemies) < 5:
-                i = random.randint(0, 3)
+            while len(mode.enemies) < 6:
+                i = random.randint(0, 4)
                 if i == 0:
                     mode.enemies.append(enemies.Enemy(mode.path[0][0], mode.path[0][1]))
                     return 
@@ -135,6 +143,9 @@ def runGame():
                     return 
                 elif i == 3:
                     mode.enemies.append(enemies.YellowBalloon(mode.path[0][0], mode.path[0][0]))
+                    return 
+                elif i == 4:
+                    mode.enemies.append(enemies.MetalBalloon(mode.path[0][0], mode.path[0][1]))
                     return 
 
 
@@ -180,6 +191,13 @@ def runGame():
                                     tower.selected = True 
                             else:
                                 tower.selected = False 
+                        elif isinstance(tower, towers.Freezetower):
+                            w,h = mode.image8.size
+                            if event.x <= tower.position[0] + w/2 and event.x >= tower.position[0] - w/2:
+                                if event.y <= tower.position[1] + h/2 and event.y >=  tower.position[1] - h/2:
+                                    tower.selected = True 
+                            else:
+                                tower.selected = False 
                 if len(mode.bolts) > 0:
                     i = 0
                     while i < len(mode.bolts):
@@ -208,71 +226,125 @@ def runGame():
                     for balloon in mode.enemies:
                         if mode.pathpos < len(mode.path):
                             if isinstance(balloon, enemies.BlueBalloon):
-                                balloon.row = mode.path[balloon.pos][0]
-                                balloon.col = mode.path[balloon.pos][1]
-                                if balloon.pos < len(mode.path) - 1:
-                                    balloon.pos += 1
-                                else:
-                                    mode.removeenemies()
-                                    balloon.pos = 0
+                                if balloon.freeze == False:
+                                    balloon.row = mode.path[balloon.pos][0]
+                                    balloon.col = mode.path[balloon.pos][1]
+                                    if balloon.pos < len(mode.path) - 1:
+                                        balloon.pos += 1
+                                    else:
+                                        mode.removeenemies()
+                                        balloon.pos = 0
                         
                             elif isinstance(balloon, enemies.Enemy):
-                                balloon.row = mode.path[balloon.pos][0]
-                                balloon.col = mode.path[balloon.pos][1]
-                                if balloon.pos < len(mode.path) - 1:
-                                    balloon.pos += 1
-                                else:
-                                    mode.removeenemies()
-                                    balloon.pos = 0
-                            
+                                if balloon.freeze == False:
+                                    balloon.row = mode.path[balloon.pos][0]
+                                    balloon.col = mode.path[balloon.pos][1]
+                                    if balloon.pos < len(mode.path) - 1:
+                                        balloon.pos += 1
+                                    else:
+                                        mode.removeenemies()
+                                        balloon.pos = 0
+                            elif isinstance(balloon, enemies.MetalBalloon):
+                                if balloon.freeze == False:
+                                    balloon.row = mode.path[balloon.pos][0]
+                                    balloon.col = mode.path[balloon.pos][1]
+                                    if balloon.pos < len(mode.path) - 1:
+                                        balloon.pos += 1
+                                    else:
+                                        mode.removeenemies()
+                                        balloon.pos = 0
                             elif isinstance(balloon, enemies.GreenBalloon):
-                                balloon.row = mode.path[balloon.pos][0]
-                                balloon.col = mode.path[balloon.pos][1]
-                                if balloon.pos < len(mode.path) - 1:
-                                    balloon.pos += 1
-                                else:
-                                    mode.removeenemies()
-                                    balloon.pos = 0
+                                if balloon.freeze == False:
+                                    balloon.row = mode.path[balloon.pos][0]
+                                    balloon.col = mode.path[balloon.pos][1]
+                                    if balloon.pos < len(mode.path) - 1:
+                                        balloon.pos += 1
+                                    else:
+                                        mode.removeenemies()
+                                        balloon.pos = 0
 
                             elif isinstance(balloon, enemies.YellowBalloon):
-                                balloon.row = mode.path[balloon.pos][0]
-                                balloon.col = mode.path[balloon.pos][1]
-                                if balloon.pos < len(mode.path) - 1:
-                                    balloon.pos += 1
-                                else:
-                                    mode.removeenemies()
-                                    balloon.pos = 0
+                                if balloon.freeze == False:
+                                    balloon.row = mode.path[balloon.pos][0]
+                                    balloon.col = mode.path[balloon.pos][1]
+                                    if balloon.pos < len(mode.path) - 1:
+                                        balloon.pos += 1
+                                    else:
+                                        mode.removeenemies()
+                                        balloon.pos = 0
                 
                 for tower in mode.towers:
                     if not isinstance(tower, towers.Wizardtower):
-                        bul = tower.attack(mode.enemies)
-                        mode.bullets.extend(bul)
-                    i = 0
-                    while i < len(mode.bullets):
-                        bullet = mode.bullets[i]
-                        x0 = bullet.position[0]
-                        y0 = bullet.position[1]
-                        x1 = x0 + (bullet.dx * bullet.speed)
-                        y1 = y0 + (bullet.dy * bullet.speed)
-                        bullet.position = (x1, y1)
-                        if bullet.checkcollision(mode.enemies):
-                            mode.bullets.pop(i)
-                            mode.gold += 3
-                        elif distance(x1, y1, tower.position[0], tower.position[1]) >= 200:
-                            mode.bullets.pop(i)
-                        else:                           
-                            i += 1
-                            
-                if mode.clock % 4 == 0:
-                    for tower in mode.towers:
+                        if isinstance(tower, towers.Fasttower):
+                            if tower.shoot > 0:
+                                bul = tower.attack(mode.enemies)
+                                mode.bullets.extend(bul)
+                                tower.shoot -= 1
+                            elif tower.shoot <= 0:
+                                if mode.clock % 10 == 0:
+                                        tower.shoot = 15
+                        elif isinstance(tower, towers.bishoptower):
+                            if tower.shoot > 0:
+                                bul = tower.attack(mode.enemies)
+                                mode.bullets.extend(bul)
+                                tower.shoot -= 4
+                            elif tower.shoot <= 0:
+                                if mode.clock % 4 == 0:
+                                        tower.shoot = 16
+                        elif isinstance(tower, towers.Freezetower):
+                            for balloon in mode.enemies:
+                                i = random.randint(0, len(mode.enemies) - 1)
+                                bl = mode.enemies[i]
+                                br, bc = bl.row, bl.col
+                                bx, by, bx1, by1 = getCellBounds(br, bc)
+                                bcx, bcy = (bx+bx1)/2, (by+by1)/2
+                                tx = tower.position[0]
+                                ty = tower.position[1]
+                                if distance(bcx, bcy, tx, ty) < tower.range: 
+                                    if mode.clock % 10 == 0:
+                                        mode.enemies[i].freeze = True 
+                                    elif mode.clock % 15 == 0:
+                                        mode.enemies[i].freeze = False 
+
+
+                        elif isinstance(tower, towers.Tower):
+                            if tower.shoot > 0:
+                                bul = tower.attack(mode.enemies)
+                                mode.bullets.extend(bul)
+                                tower.shoot -= 2
+                            elif tower.shoot <= 0:
+                                if mode.clock % 20 == 0:
+                                        tower.shoot = 15
+                    if mode.clock % 4 == 0:
                         if isinstance(tower, towers.Wizardtower):
                             if mode.clock % 5 == 0:
                                 if tower.shoot != 0:
-                                    (mode.lix, mode.liy, gold) = tower.attack(mode.enemies)
-                                    tower.shoot -= 1
-                                    mode.gold += gold
-                                    mode.lightning.append((mode.lix, mode.liy))
-                                    mode.bolts.append((mode.lix, mode.liy))
+                                    if tower.attack(mode.enemies) == None:
+                                        return 
+                                    else:
+                                        (mode.lix, mode.liy, gold) = tower.attack(mode.enemies)
+                                        tower.shoot -= 1
+                                        mode.gold += gold
+                                        mode.lightning.append((mode.lix, mode.liy))
+                                        mode.bolts.append((mode.lix, mode.liy))
+                                    if tower.shoot <= 0:
+                                        tower.shoot = 20
+
+                i = 0
+                while i < len(mode.bullets):
+                    bullet = mode.bullets[i]
+                    x0 = bullet.position[0]
+                    y0 = bullet.position[1]
+                    x1 = x0 + (bullet.dx * bullet.speed)
+                    y1 = y0 + (bullet.dy * bullet.speed)
+                    bullet.position = (x1, y1)
+                    if bullet.checkcollision(mode.enemies):
+                        mode.bullets.pop(i)
+                        mode.gold += 3
+                    elif distance(x1, y1, tower.position[0], tower.position[1]) >= 200:
+                        mode.bullets.pop(i)
+                    else:                           
+                        i += 1
                                                             
         def removeenemies(mode):
             result = []
@@ -328,10 +400,18 @@ def runGame():
                     mode.cantafford = False 
                 else:
                     mode.cantafford = True 
+            elif event.key == "i":
+                if mode.gold >= towers.Freezetower((1,1)).price:  
+                    mode.placetower = towers.Freezetower((1,1))
+                    mode.cantafford = False 
+                else:
+                    mode.cantafford = True 
             elif event.key == "l":
                 mode.lives = 0
             elif event.key == "z":
                 mode.gold = 10000
+           
+         
 
 
 
@@ -343,7 +423,23 @@ def runGame():
                 x0,y0,x1,y1 = getCellBounds(brow,bcol)
                 cx = (x0+x1)/2
                 cy = (y0+y1)/2
-                canvas.create_oval(cx-r, cy+r, cx+r, cy-r, fill=balloon.color)
+                if isinstance(balloon, enemies.MetalBalloon):
+                    brow = balloon.row
+                    bcol = balloon.col
+                    x0,y0,x1,y1 = getCellBounds(brow,bcol)
+                    cx = (x0+x1)/2
+                    cy = (y0+y1)/2
+                    if balloon.freeze == False:
+                        canvas.create_oval(cx-r, cy+r, cx+r, cy-r, fill=balloon.color)
+                        canvas.create_text(cx, cy, text=f"{balloon.health}", fill="white")
+                    else:
+                        canvas.create_oval(cx-r, cy+r, cx+r, cy-r, fill="white")
+                        canvas.create_text(cx, cy, text=f"{balloon.health}", fill="black")
+                else:
+                    if balloon.freeze == False:
+                        canvas.create_oval(cx-r, cy+r, cx+r, cy-r, fill=balloon.color)
+                    else:
+                        canvas.create_oval(cx-r, cy+r, cx+r, cy-r, fill="white")
         
         def drawtowerrange(mode, canvas):
             for tower in mode.towers:
@@ -362,8 +458,11 @@ def runGame():
                     canvas.create_image(x, y, image=ImageTk.PhotoImage(mode.image4))
                 elif isinstance(tower, towers.Wizardtower):
                     canvas.create_image(x, y, image=ImageTk.PhotoImage(mode.image6))
+                elif isinstance(tower, towers.Freezetower):
+                    canvas.create_image(x, y, image=ImageTk.PhotoImage(mode.image8))
                 elif isinstance(tower, towers.Tower):
                     canvas.create_image(x, y, image=ImageTk.PhotoImage(mode.image3))
+                
 
         def drawstats(mode, canvas):
             canvas.create_text(1100, 15, text=f"Health: {mode.lives}", fill="red", font="Arial 15 bold")
@@ -373,14 +472,14 @@ def runGame():
             for bullet in mode.bullets:
                 x,y = bullet.position[0], bullet.position[1]
                 r = bullet.radius
-                canvas.create_oval(x-r, y-r, x+r, y+r, fill="black")
+                canvas.create_oval(x-r, y-r, x+r, y+r, fill="grey")
 
         
         def drawlightning(mode, canvas):
             for bolt in mode.lightning:
                 x,y = bolt[0], bolt[1]
                 canvas.create_image(x,y, image=ImageTk.PhotoImage(mode.image7))
-    
+
         def redrawAll(mode, canvas):
             for row in range(mode.rows):
                 for col in range(mode.cols):
