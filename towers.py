@@ -67,22 +67,7 @@ class Fasttower(Tower):
         self.price = 150
         self.range = 175
         self.shoot = 20
-
-class bishoptower(Tower):
-    def __init__(self, position):
-        super().__init__(position)
-        self.name = "tacshooter"
-        self.price = 300
-        self.range = 200
-        self.shoot = 20
-   
-    def attack(self, enemies):
-        bul = []
-        bul.append(arrow.arrow(self.position, -1/(2**.5), -1/(2**.5)))
-        bul.append(arrow.arrow(self.position, 1/(2**.5), -1/(2**.5)))
-        bul.append(arrow.arrow(self.position, -1/(2**.5), 1/(2**.5)))
-        bul.append(arrow.arrow(self.position, 1/(2**.5), 1/(2**.5)))
-        return bul
+        
 
 class Wizardtower(Tower):
     def __init__(self, position):

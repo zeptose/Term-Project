@@ -7,15 +7,18 @@ import tkinter
 import towers
 import random
 import arrow
+import fire
 from other import *
-#add spikes and try to make movement in x,y to add speed on balloons
+
 ####All tower images are from CraftPix.net
 ### map from: https://craftpix.net/product/tower-defense-2d-game-kit/
 ###main towers from: https://craftpix.net/product/archer-tower-game-assets/
 ### magic tower from: https://craftpix.net/product/magic-tower-game-assets/
+### fire from: https://www.storyblocks.com/video/search/blue+flames
 ##Background from wallpapertip.com, https://www.wallpapertip.com/wpic/miTixR_abstract-art-cool-backgrounds/ 
 ##Animations, graphics from cmu 15112 graphics :https://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
 ##modal app from https://www.cs.cmu.edu/~112/notes/notes-animations-part3.html
+
 
 def runGame():
     def board(rows, cols):
@@ -26,9 +29,9 @@ def runGame():
             width, height = mode.startimg.size
             mode.startimg = mode.scaleImage(mode.startimg, mode.width/width)
             mode.help = False 
-            mode.helpimg = mode.loadImage("Images/cool.png")
+            mode.helpimg = mode.loadImage("Images/d.png")
             width, height = mode.helpimg.size
-            mode.helpimg = mode.scaleImage(mode.helpimg, (mode.height - 50)/width)
+            mode.helpimg = mode.scaleImage(mode.helpimg, (mode.height - 10)/height)
         def mousePressed(mode, event):
             x = event.x
             y = event.y
@@ -75,6 +78,7 @@ def runGame():
             mode.cantafford = False 
             mode.placetower = None
             mode.illegal = False 
+            mode.placefire = None 
 
             mode.clock = 0
         
@@ -98,10 +102,6 @@ def runGame():
             width, height = mode.image3.size
             mode.image3 = mode.scaleImage(mode.image3, 80/width)
             
-            mode.image4 = mode.loadImage("Images/decor_9.png")
-            width, height = mode.image4.size
-            mode.image4 = mode.scaleImage(mode.image4, 80/width)
-            
             mode.image5 = mode.loadImage("Images/11.png")
             width, height = mode.image5.size
             mode.image5 = mode.scaleImage(mode.image5, 80/width)
@@ -116,17 +116,26 @@ def runGame():
             mode.image8 = mode.loadImage("Images/freeze1.png")
             width, height = mode.image8.size
             mode.image8 = mode.scaleImage(mode.image8, 80/width)
+
+            mode.image9 = mode.loadImage("Images/flame1.png")
+            width, height = mode.image9.size
+            mode.image9 = mode.scaleImage(mode.image9, 25/width)
             
             mode.lix = None
             mode.liy = None 
             mode.lightning = []
             mode.bolts = []
+            mode.fire = []
          #   mode.timerDelay = 200
             
 
         def addTower(mode, x, y):
             tower = towers.Tower((x,y))
             mode.towers.append(tower)
+        
+        def addFire(mode, x, y):
+            flame = fire.Fire((x,y))
+            mode.fire.append(flame)
         
         
         def spawnv2(mode):
@@ -161,6 +170,15 @@ def runGame():
                         mode.placetower = None    
                     else:
                         mode.illegal = True 
+                if mode.placefire != None:
+                    if mode.legalplace2(event.x, event.y, 50):
+                        mode.illegal = False
+                        fire.position = (event.x, event.y)
+                        mode.fire.append(mode.placefire)
+                        mode.gold -= mode.placefire.price
+                        mode.placefire = None 
+                    else:
+                        mode.illegal = True 
                 if mode.towers != []:
                     for tower in mode.towers:
                         if isinstance(tower, towers.Tower):
@@ -172,13 +190,6 @@ def runGame():
                                 tower.selected = False 
                         elif isinstance(tower, towers.Fasttower):
                             w,h = mode.image5.size
-                            if event.x <= tower.position[0] + w/2 and event.x >= tower.position[0] - w/2:
-                                if event.y <= tower.position[1] + h/2 and event.y >=  tower.position[1] - h/2:
-                                    tower.selected = True 
-                            else:
-                                tower.selected = False 
-                        elif isinstance(tower, towers.bishoptower):
-                            w,h = mode.image4.size
                             if event.x <= tower.position[0] + w/2 and event.x >= tower.position[0] - w/2:
                                 if event.y <= tower.position[1] + h/2 and event.y >=  tower.position[1] - h/2:
                                     tower.selected = True 
@@ -198,6 +209,14 @@ def runGame():
                                     tower.selected = True 
                             else:
                                 tower.selected = False 
+                    if mode.fire != []:
+                        for flame in mode.fire:
+                            w,h = mode.image9.size
+                            if event.x <= flame.position[0] + w/2 and event.x >= flame.position[0] - w/2:
+                                if event.y <= flame.position[1] + h/2 and event.y >=  flame.position[1] - h/2:
+                                    flame.selected = True 
+                            else:
+                                flame.selected = False 
                 if len(mode.bolts) > 0:
                     i = 0
                     while i < len(mode.bolts):
@@ -214,7 +233,8 @@ def runGame():
         def mouseMoved(mode, event):
             if mode.placetower != None:
                 mode.placetower.position = (event.x, event.y)
-        
+            elif mode.placefire != None:
+                mode.placefire.position = (event.x, event.y)
         def timerFired(mode):
             mode.clock += 1
             if mode.lives <= 0:
@@ -283,14 +303,6 @@ def runGame():
                             elif tower.shoot <= 0:
                                 if mode.clock % 10 == 0:
                                         tower.shoot = 15
-                        elif isinstance(tower, towers.bishoptower):
-                            if tower.shoot > 0:
-                                bul = tower.attack(mode.enemies)
-                                mode.bullets.extend(bul)
-                                tower.shoot -= 4
-                            elif tower.shoot <= 0:
-                                if mode.clock % 4 == 0:
-                                        tower.shoot = 16
                         elif isinstance(tower, towers.Freezetower):
                             for balloon in mode.enemies:
                                 i = random.randint(0, len(mode.enemies) - 1)
@@ -329,6 +341,27 @@ def runGame():
                                         mode.bolts.append((mode.lix, mode.liy))
                                     if tower.shoot <= 0:
                                         tower.shoot = 20
+                for flame in mode.fire:
+                    if mode.clock % 10 == 0:
+                        for balloon in mode.enemies:
+                            br, bc = balloon.row, balloon.col
+                            bx, by, bx1, by1 = getCellBounds(br, bc)
+                            bcx, bcy = (bx+bx1)/2, (by+by1)/2
+                            fx = flame.position[0]
+                            fy = flame.position[1]
+                            if distance(bcx, bcy, fx, fy) < flame.radius + 15:
+                                if not isinstance(balloon, enemies.MetalBalloon):
+                                    newbloon = balloon.weakerballoon()
+                                    mode.enemies.remove(balloon) 
+                                    if newbloon.health > 0:
+                                        mode.enemies.append(newbloon)
+                                else:
+                                    newbloon = enemies.YellowBalloon(balloon.row, balloon.col)
+                                    mode.enemies.remove(balloon) 
+                                    mode.enemies.append(newbloon)
+
+
+
 
                 i = 0
                 while i < len(mode.bullets):
@@ -357,18 +390,25 @@ def runGame():
                 mode.lives -= balloon.health   
                 mode.enemies.remove(balloon)
 
+        def legalplace2(mode, x,y, towerrange):
+            r,c = getCell(x,y)
+            if mode.boardd[r][c] == 0 or (r,c) not in mode.path:
+                return False 
+            for fire in mode.fire:
+                if distance(x,y,fire.position[0],fire.position[1]) < fire.radius * 2:
+                    return False 
+            return True
         def legalplace(mode, x,y, towerrange):
             r,c = getCell(x,y)
             if mode.boardd[r][c] == 1 or (r,c) in mode.path:
-                return False 
+                    return False 
             for tower in mode.towers:
                 if distance(x,y,tower.position[0],tower.position[1]) < tower.radius * 2:
                     return False 
-    
             for balloon in mode.enemies:
                 x1,y1 = getCell(balloon.row, balloon.col)
                 if distance(x,y,x1,y1) < 65:
-                    return False 
+                   return False 
             return True 
 
                 
@@ -388,12 +428,6 @@ def runGame():
                     mode.cantafford = False 
                 else:
                     mode.cantafford = True 
-            elif event.key == "b":
-                if mode.gold >= towers.bishoptower((1,1)).price:  
-                    mode.placetower = towers.bishoptower((1,1))
-                    mode.cantafford = False 
-                else:
-                    mode.cantafford = True 
             elif event.key == "f":
                 if mode.gold >= towers.Fasttower((1,1)).price:  
                     mode.placetower = towers.Fasttower((1,1))
@@ -406,6 +440,13 @@ def runGame():
                     mode.cantafford = False 
                 else:
                     mode.cantafford = True 
+            elif event.key == "h":
+                if mode.gold >= fire.Fire((1,1)).price:  
+                    mode.placefire = fire.Fire((1,1))
+                    mode.cantafford = False 
+                else:
+                    mode.cantafford = True     
+            ###short cuts 
             elif event.key == "l":
                 mode.lives = 0
             elif event.key == "z":
@@ -454,15 +495,17 @@ def runGame():
                 r = tower.radius - 5 
                 if isinstance(tower, towers.Fasttower):
                     canvas.create_image(x, y, image=ImageTk.PhotoImage(mode.image5))
-                elif isinstance(tower, towers.bishoptower):
-                    canvas.create_image(x, y, image=ImageTk.PhotoImage(mode.image4))
                 elif isinstance(tower, towers.Wizardtower):
                     canvas.create_image(x, y, image=ImageTk.PhotoImage(mode.image6))
                 elif isinstance(tower, towers.Freezetower):
                     canvas.create_image(x, y, image=ImageTk.PhotoImage(mode.image8))
                 elif isinstance(tower, towers.Tower):
                     canvas.create_image(x, y, image=ImageTk.PhotoImage(mode.image3))
-                
+        def drawfire(mode, canvas):
+            for flame in mode.fire:
+                x,y = flame.position[0], flame.position[1]
+                r = flame.radius - 5 
+                canvas.create_image(x, y, image=ImageTk.PhotoImage(mode.image9))
 
         def drawstats(mode, canvas):
             canvas.create_text(1100, 15, text=f"Health: {mode.lives}", fill="red", font="Arial 15 bold")
@@ -496,13 +539,20 @@ def runGame():
             mode.drawtowers(canvas)
             mode.drawstats(canvas)            
             mode.drawbullets(canvas)
+            mode.drawfire(canvas)
             mode.drawenemies(canvas)  
             mode.drawlightning(canvas)
+ 
             if mode.placetower != None:
                 x = mode.placetower.position[0]
                 y = mode.placetower.position[1]
                 r = 50
                 canvas.create_oval(x-r, y-r, x+r, y+r, fill="grey")
+            if mode.placefire != None:
+                x = mode.placefire.position[0]
+                y = mode.placefire.position[1]
+                r = 50
+                canvas.create_oval(x-r, y-r, x+r, y+r, fill="red")
             if mode.cantafford == True:
                 canvas.create_text(mode.width/2, mode.height/2, text="You can't afford that right now, defeat more balloons in order to earn more gold", font="Arial 20")
             if mode.illegal == True:

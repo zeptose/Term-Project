@@ -2,6 +2,14 @@ import math
 import n
 from cmu_112_graphics import *
 
+def getCellBounds(row, col):
+            cellWidth = 1200 / 15
+            cellHeight = 700 / 15
+            x0 = col * cellWidth
+            x1 = (col+1) * cellWidth
+            y0 =  row * cellHeight
+            y1 = (row+1) * cellHeight
+            return (x0, y0, x1, y1)
 def distance(x, y, x1, y1):
         return ((x-x1)**2 + (y-y1)**2)**0.5
 def board(rows, cols):
@@ -19,9 +27,15 @@ class Enemy(object):
         self.pos = 0
         self.row, self.col = row, col
         self.freeze = False 
+
+
+   
     def weakerballoon(self):
         self.health = 0
         return self
+    
+    
+
 
 
 
@@ -36,6 +50,7 @@ class BlueBalloon(Enemy):
         self.col = col
         self.pos = 0
         self.freeze = False 
+     
     
     def weakerballoon(self):
         balloon = Enemy(self.row, self.col)
