@@ -95,8 +95,7 @@ class Wizardtower(Tower):
             else:
                 i += 1
                 
-        if self.lx == None and self.ly == None:
-            return (0,0,0)
+        return (0,0,0)
 class Freezetower(Tower):
     def __init__(self, position):
         super().__init__(position)

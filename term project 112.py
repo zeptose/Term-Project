@@ -29,7 +29,7 @@ def runGame():
             width, height = mode.startimg.size
             mode.startimg = mode.scaleImage(mode.startimg, mode.width/width)
             mode.help = False 
-            mode.helpimg = mode.loadImage("Images/d.png")
+            mode.helpimg = mode.loadImage("Images/e.png")
             width, height = mode.helpimg.size
             mode.helpimg = mode.scaleImage(mode.helpimg, (mode.height - 10)/height)
         def mousePressed(mode, event):
@@ -330,17 +330,12 @@ def runGame():
                     if mode.clock % 4 == 0:
                         if isinstance(tower, towers.Wizardtower):
                             if mode.clock % 5 == 0:
-                                if tower.shoot != 0:
-                                    if tower.attack(mode.enemies) == None:
-                                        return 
-                                    else:
-                                        (mode.lix, mode.liy, gold) = tower.attack(mode.enemies)
-                                        tower.shoot -= 1
-                                        mode.gold += gold
-                                        mode.lightning.append((mode.lix, mode.liy))
-                                        mode.bolts.append((mode.lix, mode.liy))
-                                    if tower.shoot <= 0:
-                                        tower.shoot = 20
+                                    (mode.lix, mode.liy, gold) = tower.attack(mode.enemies)
+                                    tower.shoot -= 1
+                                    mode.gold += gold
+                                    mode.lightning.append((mode.lix, mode.liy))
+                                    mode.bolts.append((mode.lix, mode.liy))
+
                 for flame in mode.fire:
                     if mode.clock % 10 == 0:
                         for balloon in mode.enemies:
